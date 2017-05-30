@@ -10,7 +10,10 @@ galaxy_info:
         - old releases
   platforms:
        - name: Debian
+         versions:
+             - stretch
        - name: FreeBSD
+             - 11.0
 
 
 
