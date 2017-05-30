@@ -1,0 +1,15 @@
+    
+- name:       extra packages
+  include:    "{{ ansible_os_family }}.yml"
+  become_user: root
+  become:      yes
+
+
+- include: compile.yml
+  become_user: postgres
+  become:      yes
+
+  # TODO fix paths
+  #- name:        ln -sf ~/pg_9.10 ~/dist-pg
+  #file:        src="{{ansible_env.HOME}}/{{ pgdir }}"  dest="{{ ansible_env.HOME }}/dist-pg"  owner=postgres   state=link
+

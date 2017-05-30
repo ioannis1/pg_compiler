@@ -1,0 +1,39 @@
+# pkgng:  name="rsync"  autoremove=yes cached=yes state=present
+     
+   - name: autoconf
+     pkgng:  name="pgxnclient"  autoremove=yes cached=yes state=present
+
+   - name: autoconf
+     pkgng:  name="autoconf"  autoremove=yes cached=yes state=present
+
+   - name: automake
+     portinstall: name="automake"         state=present
+
+     #TODO: install readline and try to makme it work
+   - name: readline
+     pkgng: name="readline"         state=present
+     ignore_errors: yes
+
+     #- name: readline-dev
+     #portinstall: name="readline"     state=present
+   - name: getttext-tools
+     portinstall: name="gettext-tools"    state=present
+   - name: gettext-runtime
+     portinstall: name="gettext-runtime"  state=present
+   - name: indexinfo
+     portinstall: name="indexinfo"        state=present
+   - name: libiconv
+     portinstall: name="libiconv"         state=present
+   - name: libxml2
+     portinstall: name="libxml2"          state=present
+   - name: bison
+     portinstall: name="bison"            state=present
+   - name: flex
+     portinstall: name="flex"             state=present
+   - name: gettext
+     portinstall: name="gettext"          state=present
+   - name: libtool
+     portinstall: name="libtool"          state=present
+
+     #- name: pkgconfig
+     #pkgng: name="pkgconfig"        state=present

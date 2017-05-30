@@ -1,0 +1,35 @@
+   - name: Install bison
+     apt: pkg=bison state=installed 
+
+   - name: Install flex
+     apt: pkg=flex state=installed 
+
+   - name: Install zlib1g-dev
+     apt: pkg=zlib1g-dev state=installed 
+
+   - name: Install libreadline-dev
+     apt: pkg=libreadline-dev state=installed 
+
+   - name: Install libssl-dev
+     apt: pkg=libssl-dev state=installed 
+
+   - name: Install libpam0g-dev
+     apt: pkg=libpam0g-dev state=installed 
+
+   - name: Install libxml2-dev
+     apt: pkg=libxml2-dev state=installed 
+
+   - name: Install libxslt1.1
+     apt: pkg=libxslt1.1 state=installed 
+
+   - name: Install libxslt1-dev
+     apt: pkg="libxslt1-dev" state=installed
+
+   - name: Install libldap2-dev
+     apt: pkg="libldap2-dev" state=installed
+
+   - name: Install pkg-config
+     apt: pkg="pkg-config" state=installed
+
+   - name: Install libicu-dev
+     apt: pkg="libicu-dev"  state=installed

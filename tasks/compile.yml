@@ -1,0 +1,82 @@
+
+      - name:        fail unless ansible executing as unix user postgres
+        when:        not (ansible_user_id == "postgres")
+        fail:        msg="Detected ansible_user_id='{{ ansible_user_id}}'. This role must run as 'postgres'"
+
+      - name:        /var/log/postgres
+        become_user: root
+        become:      yes
+        file:        path=/var/log/postgresql   state=directory   owner=postgres   group=postgres   mode=0750 
+
+      - name:       ~postgres/src
+        file:       path="{{ ansible_env.HOME }}/src"   owner=postgres  group=postgres  group=postgres  state=directory
+
+      - name:        ioannis.mk
+        remote_user: postgres
+        become:      yes
+        copy:        src=src/ioannis.mk  dest="{{ ansible_env.HOME }}/src"
+
+    
+################### git postgresql ############################
+      - name:        git postgres
+        remote_user: postgres
+        become:      yes
+        register:    github_postgres_success
+        git:  
+           repo: https://github.com/postgres/postgres.git
+           #repo: https://github.com/reorg/pg_repack.git
+           dest: "{{ ansible_env.HOME }}/src/postgres"
+           version:  "{{ postgres_checkout }}"
+
+################### Other Repos ############################
+      - include:    github_repos.yml
+        when:       github_repos
+
+      - name:       chown -R ~postgres/src
+        file:       path="{{ ansible_env.HOME }}/src"   owner=postgres  group=postgres  recurse=yes
+
+      - name:       update github postgres
+        ignore_errors: True
+        when:          false
+        git:
+          repo:     https://github.com/postgres/postgres.git
+          dest:     "{{ ansible_env.HOME }}/src/postgres"
+          update:   yes
+          clone:    no
+          force:    yes
+
+################### Configure ############################
+
+      - name:      ./configure
+        when:      ansible_os_family == 'Debian'
+        command:   "./configure   --with-includes=/opt/local/include  --with-libs=/opt/local/lib --prefix={{ansible_env.HOME}}/{{ pgdir }}   --with-openssl   --with-ldap  chdir={{ ansible_env.HOME }}/src/postgres"
+
+
+      - name:      ./configure
+        when:      ansible_os_family == 'FreeBSD'
+        command:   "./configure  --without-readline  --prefix={{ansible_env.HOME}}/{{ pgdir }}   --with-openssl   --with-libxml --with-pam  chdir={{ ansible_env.HOME }}/src/postgres"
+
+      - name:      ./configure
+        when:      ansible_os_family == 'Darwin'
+        command:   "./configure   --with-includes=/opt/local/include   --prefix={{ansible_env.HOME}}/{{ pgdir }}   --with-openssl   --with-pam --with-ldap  chdir={{ ansible_env.HOME }}/src/postgres"
+
+################### Compile postgres ############################
+      - name:      make
+        make:      target="install"      chdir="{{ ansible_env.HOME }}/src/postgres" 
+
+      - name:      ln -sf ~/pg_9.10 ~/dist-pg
+        file:      src="{{ansible_env.HOME}}/{{ pgdir }}"  dest="{{ ansible_env.HOME}}/dist-pg"  owner=postgres   state=link    
+
+      - name:      pgxn install pgtap semver pg_stat_kcache  pg_qualstats
+        command:   "pgxn install {{ item }}"
+        environment:  
+            PATH:   "{{ ansible_env.HOME }}/{{ pgdir }}/bin:/usr/bin:/usr/local/bin:{{ansible_env.PATH}}"
+        with_items:
+            - pgtap
+            - semver
+            - pg_stat_kcache
+            - pg_qualstats
+              #- powa
+          
+# --with-libxml   --with-libxslt --with-pam  
+# --with-readline --with-ldap

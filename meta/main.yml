@@ -1,0 +1,19 @@
+galaxy_info:
+  author: Ioannis Tambouras
+  description: compile postgres from sources for any official release.
+  company: Akron Inc
+  license: "MIT"
+  min_ansible_version: 1.2
+  galaxy_tags: 
+        - postgresql
+        - compile
+        - old releases
+  platforms:
+       - name: Debian
+       - name: FreeBSD
+
+
+
+allow_duplicates: no
+dependencies: []
+#- { role: pg_compiler }

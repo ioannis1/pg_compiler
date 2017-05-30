@@ -1,0 +1,30 @@
+
+    - name: git repos
+      remote_user: postgres
+      become:      yes
+      #when:        github_repos| succeeded
+      register:    github_repos
+      git:  
+         repo: "{{ item }}"
+         dest: "{{ ansible_env.HOME }}/src/{{ item | regex_replace('^git:.*/|^http.*/|.git$','') }}"
+      with_items:
+           - https://github.com/reorg/pg_repack.git
+           - https://github.com/markwkm/pg_top.git
+           - https://github.com/ohmu/pgmemcache.git
+           - https://github.com/bucardo/check_postgres.git
+           - https://github.com/max-horvath/htop-osx.git
+           - https://github.com/liquibase/liquibase.git
+           - https://github.com/CrunchyData/crunchy-containers.git
+           - https://github.com/keithf4/pg_bloat_check.git
+           - https://github.com/gurjeet/pg_hibernator.git
+           - https://github.com/dalibo/pg_stat_kcache.git
+           - https://github.com/theory/pgagent.git
+           - https://github.com/pganalyze/pganalyze-collector.git
+           - https://github.com/2ndQuadrant/pgaudit.git
+           - git://git.postgresql.org/git/pgbench-tools.git
+           - https://github.com/lesovsky/pgcenter.git
+           - https://github.com/dimitri/pgcharts
+           - https://github.com/darold/pgcluu.git
+           - https://github.com/laurenz/pgreplay.git
+           - https://github.com/theory/pgtap.git
+
