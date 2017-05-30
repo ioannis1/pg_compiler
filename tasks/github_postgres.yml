@@ -1,9 +1,0 @@
-    - name:        git postgres
-      remote_user: postgres
-      become:      yes
-      register:    github_postgres_success
-      git:  
-         repo: https://github.com/postgres/postgres.git
-         #repo: https://github.com/reorg/pg_repack.git
-         dest: "{{ ansible_env.HOME }}/src/postgres"
-
