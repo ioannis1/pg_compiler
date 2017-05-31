@@ -1,5 +1,5 @@
 github_repos:        false
-pgdir:               pg-9.10
+#pgdir:               pg-9.10
 postgres_checkout:   master
 pgxn_ext:
      - pgtap

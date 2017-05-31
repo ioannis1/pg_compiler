@@ -16,11 +16,11 @@ Pre-conditions:
     it will be installed.
 
 Post-conditions:
-  -  ~postgres/dist-pg is symlinked to the installed postgres binaries
-  - created directories /var/log/postgres ~postgres/src
+  - Symbolic link ~postgres/dist-pg points to the installed postgres binaries
+  - Created directories /var/log/postgres ~postgres/src
   - Installed postgres binaries to target directory
   - Postgres documentation is absent
-  - installed  specified  extensions.
+  - Installed  specified  extensions.
   - Directories for github sources are created under directory ~postgres/src/
 
 
@@ -37,21 +37,13 @@ Role Variables
 These are the default values for the variables used:
 
 github_repos:        false
-pgdir:               pg-9.10
 postgres_checkout:   master
-pgxn_ext:
-     - pgtap
-     - semver
-     - pg_stat_kcache
-     - pg_qualstats
+pgxn_ext:            [ pgtap, semver, pg_stat_kcache, pg_qualstats ]
 
 
 where,
 'github_repos'       Fetches sources (but not compiles) for the dozen, or so, postgres applications.
-'pgdir'              Is the target install directory for the postgres binaries. It is relative to ~postgres; 
-                     therefore,it the default is actually ~postgres/pg-9.10
-'postgres_checkout'  The tag release for the postgres sources to checkout for compilation, i.e. 'REL9_6_3' will
-                     checkout the 9.6.3 release .
+'postgres_checkout'  The tag for the postgres sources to checkout for compilation.
 'pgxn_ext'           List of extensions to install
 
 
@@ -65,7 +57,7 @@ Example Playbook
 
     - hosts: servers
       roles:
-         - { role: ioannis1.pg_compile, pgdir: pg-9.10 }
+         - { role: ioannis1.pg_compile,    postgres_checkout: REL_10_BETA1 }
 
 License
 -------
