@@ -64,19 +64,12 @@
       - name:      make
         make:      target="install"      chdir="{{ ansible_env.HOME }}/src/postgres" 
 
-      - name:      ln -sf ~/pg_9.10 ~/dist-pg
+      - name:      "ln -sf ~/{{ pgdir}}  ~/dist-pg"
         file:      src="{{ansible_env.HOME}}/{{ pgdir }}"  dest="{{ ansible_env.HOME}}/dist-pg"  owner=postgres   state=link    
 
-      - name:      pgxn install pgtap semver pg_stat_kcache  pg_qualstats
-        command:   "pgxn install {{ item }}"
+      - name:         pgxn extenions
+        command:      "pgxn install {{ item }}"
         environment:  
-            PATH:   "{{ ansible_env.HOME }}/{{ pgdir }}/bin:/usr/bin:/usr/local/bin:{{ansible_env.PATH}}"
-        with_items:
-            - pgtap
-            - semver
-            - pg_stat_kcache
-            - pg_qualstats
-              #- powa
+            PATH:    "{{ ansible_env.HOME }}/{{ pgdir }}/bin:/usr/bin:/usr/local/bin:{{ansible_env.PATH}}"
+        with_items:  "{{ pgxn_ext }}"
           
-# --with-libxml   --with-libxslt --with-pam  
-# --with-readline --with-ldap
