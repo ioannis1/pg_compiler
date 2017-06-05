@@ -67,6 +67,7 @@
       - name:      "ln -sf ~/pg-{{ postgres_checkout }}  ~/dist-pg"
         file:      src="{{ansible_env.HOME}}/pg-{{ postgres_checkout  }}"  dest="{{ ansible_env.HOME}}/dist-pg"  owner=postgres   state=link    
 
+################### Compile extensions ############################
       - name:         pgxn extenions
         command:      "pgxn install {{ item }}"
         environment:  
