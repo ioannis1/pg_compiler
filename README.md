@@ -6,9 +6,9 @@ postgres binaries and certtain extensions to the target directory. Documentation
 Also compiles about a dozen popular applications like pgagent, pg_top, pgaudit, pg_repack, etc.
 The main postgres source tree is compiled differently depending of its target platform, as follows:
 
+  FreeBSD:  ./configure  --without-readline  --with-openssl   --with-libxml  --with-pam  
   Debian:   ./configure  --with-readline     --with-openssl   --with-ldap 
-  FreeBSD:  ./configure  --without-readline  --with-openssl   --with-pam   --with-libxml
-  Darwin:   ./configure  --with-readline     --with-openssl   --with-pam   --with-ldap 
+  Darwin:   ./configure  --with-readline     --with-openssl   --with-ldap    --with-pam
 
 Pre-conditions:
   - Ability to fetch sources from github

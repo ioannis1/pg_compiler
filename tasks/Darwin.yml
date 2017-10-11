@@ -2,12 +2,12 @@
       - macports:    name="automake"          state=present
       - macports:    name="bison"             state=present
       - macports:    name="docbook-dsssl"     state=present
-      - macports:    name="docbook-sgml"      state=present
+      - macports:    name="docbook-sgml-4.2"  state=present
       - macports:    name="docbook-xml"       state=present
       - macports:    name="docbook-xsl"       state=present
       - macports:    name="expat"             state=present
       - macports:    name="icu"               state=present
-      - macports:    name="gcc"               state=present
+      - macports:    name="gcc8"              state=present
       - macports:    name="gettext"           state=present
       - macports:    name="libgcrypt"         state=present
       - macports:    name="libproj4"          state=present

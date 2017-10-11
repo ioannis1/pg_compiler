@@ -58,7 +58,7 @@
 
       - name:      ./configure
         when:      ansible_os_family == 'Darwin'
-        command:   "./configure   --with-includes=/opt/local/include   --prefix={{ansible_env.HOME}}/pg-{{ postgres_checkout }}   --with-openssl   --with-pam --with-ldap  chdir={{ ansible_env.HOME }}/src/postgres"
+        command:   "./configure   --with-includes=/opt/local/include   --with-libs=/opt/local/lib  --prefix={{ansible_env.HOME}}/pg-{{ postgres_checkout }}   --with-openssl   --with-pam --with-ldap  chdir={{ ansible_env.HOME }}/src/postgres"
 
 ################### Compile postgres ############################
       - name:      make
