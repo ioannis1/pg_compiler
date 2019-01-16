@@ -1,8 +1,8 @@
 github_repos:        false
 postgres_checkout:   master
+install_docs:        false
 pgxn_ext:
      - pgtap
      - semver
      - pg_stat_kcache
      - pg_qualstats
-

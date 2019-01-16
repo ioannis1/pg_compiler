@@ -5,6 +5,7 @@
       - macports:    name="docbook-sgml-4.2"  state=present
       - macports:    name="docbook-xml"       state=present
       - macports:    name="docbook-xsl"       state=present
+      - macports:    name="openjade"          state=present
       - macports:    name="expat"             state=present
       - macports:    name="icu"               state=present
       - macports:    name="gcc8"              state=present
@@ -26,3 +27,4 @@
         macports:    name="readline"          state=present
       - macports:    name="yarn"              state=present
       - macports:    name="zlib"              state=present
+      - macports:    name="zmq"               state=present
