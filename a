@@ -1,0 +1,1 @@
+./config --with-includes=/opt/local/include --with-libs=/opt/local/lib --prefix=/home/postgres/pg-REL_11_4 --with-openssl --with-ldap

@@ -1,81 +1,102 @@
+############################## Helper Variables
+- shell:  uname -s
+  register: result
 
-      - name:        fail unless ansible executing as unix user postgres
-        when:        not (ansible_user_id == "postgres")
-        fail:        msg="Detected ansible_user_id='{{ ansible_user_id}}'. This role must run as 'postgres'"
+- set_fact: os_family="{{result.stdout}}"
 
-      - name:        /var/log/postgres
-        become_user: root
-        become:      yes
-        file:        path=/var/log/postgresql   state=directory   owner=postgres   group=postgres   mode=0750 
+- set_fact: HOME="/home"
+  when:     os_family == "Linux"
 
-      - name:       ~postgres/src
-        file:       path="{{ ansible_env.HOME }}/src"   owner=postgres  group=postgres  group=postgres  state=directory
+- set_fact: HOME="/Users"
+  when:     os_family == "Darwin"
 
-      - name:        ioannis.mk
-        remote_user: postgres
-        become:      yes
-        copy:        src=src/ioannis.mk  dest="{{ ansible_env.HOME }}/src"
+- set_fact: HOME="/home"
+  when:     os_family == "FreeBSD"
+
+- shell:    whoami
+  register: WHOAMI
+############################################################
+- name:        fail unless ansible executing as unix user postgres
+  when:        not (  WHOAMI.stdout  == "postgres")
+  fail:        msg="Detected '{{ WHOAMI.stdout }}', but must run as 'postgres'"
+
+- name:        /var/log/postgres
+  become_user: root
+  become:      yes
+  file:        path=/var/log/postgresql   state=directory   owner=postgres   group=postgres   mode=0750 
+
+- name:       ~postgres/src
+  file:       path="{{ HOME }}/postgres/src"   owner=postgres  group=postgres  group=postgres  state=directory
+
+- name:        ioannis.mk
+  remote_user: postgres
+  become:      yes
+  copy:        src=src/ioannis.mk  dest="{{ HOME }}/postgres/src"
 
     
 ################### git postgresql ############################
-      - name:        git postgres
-        remote_user: postgres
-        become:      yes
-        register:    github_postgres_success
-        git:  
-           repo: https://github.com/postgres/postgres.git
-           #repo: https://github.com/reorg/pg_repack.git
-           dest: "{{ ansible_env.HOME }}/src/postgres"
-           version:  "{{ postgres_checkout }}"
+- name:        git postgres
+  remote_user: postgres
+  become:      yes
+  register:    github_postgres_success
+  git:  
+     repo:        https://github.com/postgres/postgres.git
+     #repo: https://github.com/reorg/pg_repack.git
+     dest:      "{{ HOME }}/postgres/src/postgres"
+     version:   "{{ postgres_checkout }}"
 
 ################### Other Repos ############################
-      - include:    github_repos.yml
-        when:       github_repos
+- include:    github_repos.yml
+  when:       github_repos
 
-      - name:       chown -R ~postgres/src
-        file:       path="{{ ansible_env.HOME }}/src"   owner=postgres  group=postgres  recurse=yes
 
-      - name:       update github postgres
-        ignore_errors: True
-        when:          false
-        git:
-          repo:     https://github.com/postgres/postgres.git
-          dest:     "{{ ansible_env.HOME }}/src/postgres"
-          update:   yes
-          clone:    no
-          force:    yes
+- name:         chown -R ~postgres/src
+  become_user:  root
+  become:       yes
+  #file:         path="{{ HOME }}/postgres/src"   owner=postgres  group=postgres  recurse=yes
+  shell:        chown -R postgres:postgres  ~postgres/src/postgres
+
+
+- name:          update github postgres
+  ignore_errors: True
+  when:          false
+  git:
+    repo:       https://github.com/postgres/postgres.git
+    dest:       "{{ HOME }}/postgres/src/postgres"
+    update:     yes
+    clone:      no
+    force:      yes
 
 ################### Configure ############################
 
-      - name:      ./configure Debian
-        when:      ansible_os_family == 'Debian'
-        command:   "./configure   --with-includes=/opt/local/include  --with-libs=/opt/local/lib --prefix={{ansible_env.HOME}}/pg-{{ postgres_checkout }}   --with-openssl   --with-ldap  chdir={{ ansible_env.HOME }}/src/postgres"
+- name:        ./configure Debian
+  when:        os_family == 'Debian'
+  command:     "./configure   --with-includes=/opt/local/include  --with-libs=/opt/local/lib --prefix={{ HOME }}/postgres/pg-{{ postgres_checkout }}   --with-openssl   --with-ldap  chdir={{ HOME }}/postgres/src/postgres"
 
+- name:      ./configure FreeBSD
+  when:      os_family == 'FreeBSD'
+  command:   "./configure  --without-readline  --prefix={{ HOME }}/postgres/pg-{{ postgres_checkout }}   --with-openssl   --with-libxml --with-pam  chdir={{ HOME }}/postgres/src/postgres"
 
-      - name:      ./configure FreeBSD
-        when:      ansible_os_family == 'FreeBSD'
-        command:   "./configure  --without-readline  --prefix={{ansible_env.HOME}}/pg-{{ postgres_checkout }}   --with-openssl   --with-libxml --with-pam  chdir={{ ansible_env.HOME }}/src/postgres"
-
-      - name:      ./configure  Darwin
-        when:      ansible_os_family == 'Darwin'
-        command:   "./configure   --with-includes=/opt/local/include   --with-libs=/opt/local/lib  --prefix={{ansible_env.HOME}}/pg-{{ postgres_checkout }}   --with-openssl   --with-pam --with-ldap  chdir={{ ansible_env.HOME }}/src/postgres"
+- name:      ./configure  Darwin
+  when:      os_family == 'Darwin'
+  command:   "./configure   --with-includes=/opt/local/include   --with-libs=/opt/local/lib  --prefix={{ HOME }}/postgres/pg-{{ postgres_checkout }}   --with-openssl   --with-pam --with-ldap  chdir={{ HOME }}/postgres/src/postgres"
 
 ################### Compile postgres ############################
-      - name:      make
-        make:      target="install"      chdir="{{ ansible_env.HOME }}/src/postgres" 
+- name:      make
+  make:      target="install"      chdir="{{ HOME }}/postgres/src/postgres" 
 
-      - name:      make install-docs
-        make:      target="install-docs"      chdir="{{ ansible_env.HOME }}/src/postgres" 
-        #when:      install_docs
-        when:      false
+- name:      make install-docs
+  make:      target="install-docs"      chdir="{{ HOME }}/postgres/src/postgres" 
+  #when:      install_docs
+  when:      false
 
-      - name:      "ln -sf ~/pg-{{ postgres_checkout }}  ~/dist-pg"
-        file:      src="{{ansible_env.HOME}}/pg-{{ postgres_checkout  }}"  dest="{{ ansible_env.HOME}}/dist-pg"  owner=postgres   state=link    
+- name:      "ln -sf ~/pg-{{ postgres_checkout }}  ~/dist-pg"
+  file:      src="{{ HOME}}/postgres/pg-{{ postgres_checkout  }}"  dest="{{ HOME}}/postgres/dist-pg"  owner=postgres   state=link    
 
 ################### Compile extensions ############################
-      - name:         pgxn extenions
-        command:      "pgxn install {{ item }}"
-        environment:  
-            PATH:    "{{ ansible_env.HOME }}/pg-{{ postgres_checkout }}/bin:/usr/bin:/usr/local/bin:{{ansible_env.PATH}}"
-        with_items:  "{{ pgxn_ext }}"
+- name:            pgxn extenions
+  command:         "pgxn install {{ item }}"
+  environment:  
+     PATH:         "{{ HOME }}/postgres/pg-{{ postgres_checkout }}/bin:/bin:/usr/bin:/usr/local/bin:{{ansible_env.PATH}}"
+  with_items:      "{{ pgxn_ext }}"
           

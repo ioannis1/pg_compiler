@@ -1,35 +1,44 @@
    - name: Install bison
-     apt: pkg=bison state=installed 
+     apt: pkg=bison 
 
    - name: Install flex
-     apt: pkg=flex state=installed 
+     apt: pkg=flex 
 
    - name: Install zlib1g-dev
-     apt: pkg=zlib1g-dev state=installed 
+     apt: pkg=zlib1g-dev 
 
    - name: Install libreadline-dev
-     apt: pkg=libreadline-dev state=installed 
+     apt: pkg=libreadline-dev 
 
    - name: Install libssl-dev
-     apt: pkg=libssl-dev state=installed 
+     apt: pkg=libssl-dev 
 
    - name: Install libpam0g-dev
-     apt: pkg=libpam0g-dev state=installed 
+     apt: pkg=libpam0g-dev 
 
    - name: Install libxml2-dev
-     apt: pkg=libxml2-dev state=installed 
+     apt: pkg=libxml2-dev 
 
    - name: Install libxslt1.1
-     apt: pkg=libxslt1.1 state=installed 
+     apt: pkg=libxslt1.1 
 
    - name: Install libxslt1-dev
-     apt: pkg="libxslt1-dev" state=installed
+     apt: pkg="libxslt1-dev" 
 
    - name: Install libldap2-dev
-     apt: pkg="libldap2-dev" state=installed
+     apt: pkg="libldap2-dev" 
 
    - name: Install pkg-config
-     apt: pkg="pkg-config" state=installed
+     apt: pkg="pkg-config" 
 
    - name: Install libicu-dev
-     apt: pkg="libicu-dev"  state=installed
+     apt: pkg="libicu-dev"  
+
+   - name:  libxml2-utils
+     apt:   pkg="libxml2-utils"
+
+   - name:  xsltproc
+     apt:   pkg="xsltproc"
+
+   - name:  pgxnclient
+     apt:   pkg="pgxnclient"
