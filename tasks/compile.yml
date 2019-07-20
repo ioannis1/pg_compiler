@@ -1,20 +1,22 @@
 ############################## Helper Variables
-- shell:  uname -s
-  register: result
+- command:      uname -s
+  environment:  PATH="/bin:/usr/bin:/usr/local/bin"
+  register:     result
 
-- set_fact: os_family="{{result.stdout}}"
+- set_fact:     os_family="{{result.stdout}}"
 
-- set_fact: HOME="/home"
-  when:     os_family == "Linux"
+- set_fact:     HOME="/home"
+  when:         os_family == "Linux"
 
-- set_fact: HOME="/Users"
-  when:     os_family == "Darwin"
+- set_fact:     HOME="/Users"
+  when:         os_family == "Darwin"
 
-- set_fact: HOME="/home"
-  when:     os_family == "FreeBSD"
+- set_fact:     HOME="/home"
+  when:         os_family == "FreeBSD"
 
-- shell:    whoami
-  register: WHOAMI
+- command:      whoami
+  environment:  PATH="/bin:/usr/bin:/usr/local/bin"
+  register:     WHOAMI
 ############################################################
 - name:        fail unless ansible executing as unix user postgres
   when:        not (  WHOAMI.stdout  == "postgres")
@@ -53,8 +55,8 @@
 - name:         chown -R ~postgres/src
   become_user:  root
   become:       yes
-  #file:         path="{{ HOME }}/postgres/src"   owner=postgres  group=postgres  recurse=yes
-  shell:        chown -R postgres:postgres  ~postgres/src/postgres
+  command:      chown -R postgres:postgres  ~postgres/src/postgres
+  environment:  PATH="/bin:/usr/bin:/usr/local/bin"
 
 
 - name:          update github postgres
@@ -87,15 +89,14 @@
 
 - name:      make install-docs
   make:      target="install-docs"      chdir="{{ HOME }}/postgres/src/postgres" 
-  #when:      install_docs
-  when:      false
+  when:      install_docs
 
 - name:      "ln -sf ~/pg-{{ postgres_checkout }}  ~/dist-pg"
   file:      src="{{ HOME}}/postgres/pg-{{ postgres_checkout  }}"  dest="{{ HOME}}/postgres/dist-pg"  owner=postgres   state=link    
 
 ################### Compile extensions ############################
 - name:            pgxn extenions
-  command:         "pgxn install {{ item }}"
+  command:         "pgxnclient install {{ item }}"
   environment:  
      PATH:         "{{ HOME }}/postgres/pg-{{ postgres_checkout }}/bin:/bin:/usr/bin:/usr/local/bin:{{ansible_env.PATH}}"
   with_items:      "{{ pgxn_ext }}"

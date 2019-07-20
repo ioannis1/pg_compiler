@@ -6,3 +6,9 @@ pgxn_ext:
      - semver
      - pg_stat_kcache
      - pg_qualstats
+     - pg_jobmon
+     - pg_partman
+     - pg_bulkload
+    #- omnipitr
+     #- acl
+     #- orafce
