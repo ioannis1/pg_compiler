@@ -9,3 +9,12 @@
 - include: compile.yml
   become_user: postgres
   become:      yes
+
+  
+  ########################################### Post Install
+- include:   "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_hostname }}.yml"
+      skip: true
+
