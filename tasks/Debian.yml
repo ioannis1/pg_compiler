@@ -1,44 +1,18 @@
-   - name: Install bison
-     apt: pkg=bison 
-
-   - name: Install flex
-     apt: pkg=flex 
-
-   - name: Install zlib1g-dev
-     apt: pkg=zlib1g-dev 
-
-   - name: Install libreadline-dev
-     apt: pkg=libreadline-dev 
-
-   - name: Install libssl-dev
-     apt: pkg=libssl-dev 
-
-   - name: Install libpam0g-dev
-     apt: pkg=libpam0g-dev 
-
-   - name: Install libxml2-dev
-     apt: pkg=libxml2-dev 
-
-   - name: Install libxslt1.1
-     apt: pkg=libxslt1.1 
-
-   - name: Install libxslt1-dev
-     apt: pkg="libxslt1-dev" 
-
-   - name: Install libldap2-dev
-     apt: pkg="libldap2-dev" 
-
-   - name: Install pkg-config
-     apt: pkg="pkg-config" 
-
-   - name: Install libicu-dev
-     apt: pkg="libicu-dev"  
-
-   - name:  libxml2-utils
-     apt:   pkg="libxml2-utils"
-
-   - name:  xsltproc
-     apt:   pkg="xsltproc"
-
-   - name:  pgxnclient
-     apt:   pkg="pgxnclient"
+- name:           packages to compile postgres sources
+  apt:
+     pkg:
+                  - bison
+                  - flex
+                  - zlib1g-dev
+                  - libreadline-dev 
+                  - libssl-dev
+                  - libpam0g-dev
+                  - libxml2-dev
+                  - libxslt1.1
+                  - libxslt1.1-dev
+                  - libldap2-dev
+                  - pkg-config
+                  - libicu-dev
+                  - libxml2-utils
+                  - xsltproc
+                  - pgxnclient
