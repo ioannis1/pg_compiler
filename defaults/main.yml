@@ -5,10 +5,10 @@ pgxn_ext:
      - pgtap
      - semver
      - pg_stat_kcache
-     - pg_qualstats
+       #     - pg_qualstats
      - pg_jobmon
      - pg_partman
-     - pg_bulkload
+       #- pg_bulkload
     #- omnipitr
      #- acl
      #- orafce
