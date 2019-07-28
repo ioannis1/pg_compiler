@@ -72,7 +72,7 @@
 ################### Configure ############################
 
 - name:        ./configure Debian
-  when:        os_family == 'Debian'
+  when:        ansible_os_family == 'Debian'
   command:     "./configure   --with-includes=/opt/local/include  --with-libs=/opt/local/lib --prefix={{ HOME }}/postgres/pg-{{ postgres_checkout }}   --with-openssl   --with-ldap  chdir={{ HOME }}/postgres/src/postgres"
 
 - name:      ./configure FreeBSD
