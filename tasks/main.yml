@@ -10,6 +10,10 @@
   become_user: postgres
   become:      yes
 
+- include:     timescaledb.yml
+  become_user: postgres
+  become:      yes
+  when:        compile_timescaledb
   
   ########################################### Post Install
 - include:   "{{ item }}"

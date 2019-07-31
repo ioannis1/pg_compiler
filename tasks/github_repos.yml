@@ -26,5 +26,4 @@
            - https://github.com/dimitri/pgcharts
            - https://github.com/darold/pgcluu.git
            - https://github.com/laurenz/pgreplay.git
-           - https://github.com/theory/pgtap.git
-
+             #- https://github.com/theory/pgtap.git
