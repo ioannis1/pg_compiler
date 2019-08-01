@@ -1,4 +1,6 @@
 - name:           packages to compile postgres sources
+  become_user:    root
+  become:         yes
   apt:
      pkg:
                   - bison
@@ -9,7 +11,7 @@
                   - libpam0g-dev
                   - libxml2-dev
                   - libxslt1.1
-                  - libxslt1.1-dev
+                  - libxslt1-dev
                   - libldap2-dev
                   - pkg-config
                   - libicu-dev
@@ -17,3 +19,7 @@
                   - xsltproc
                   - pgxnclient
                   - cmake
+                  - libevent-dev
+                  - pandoc
+                  - libtool
+

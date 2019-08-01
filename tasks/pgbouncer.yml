@@ -1,0 +1,61 @@
+################### git timescaledb ############################
+- name:        git pgbouncer
+  remote_user: postgres
+  become:      yes
+  git:  
+     repo:       https://github.com/pgbouncer/pgbouncer.git
+     dest:      "{{ HOME }}/postgres/src/pgbouncer"
+     #version:   'master'
+
+################### Other Repos ############################
+
+- name:          update github pgbouncer
+  ignore_errors: True
+  git:
+    repo:       https://github.com/pgbouncer/pgbouncer.git
+    dest:       "{{ HOME }}/postgres/src/pgbouncer"
+    update:     yes
+    clone:      no
+    force:      yes
+
+
+################### Configure ############################
+
+
+- name:           no previous build exits
+  file:           dest="{{ HOME }}/postgres/src/timescaledb/build"    state=absent
+  environment:  
+      PATH:                 "{{ HOME }}/postgres/dist-pg/bin:/bin:/usr/bin:/usr/local/bin"
+      BUILD_FORCE_REMOVE:   true
+  when:  false
+
+- name:           autogen
+  shell:         cd {{ HOME }}/postgres/src/pgbouncer && ./autogen.sh
+  environment:  
+      PATH:      "{{ HOME }}/postgres/dist-pg/bin:/bin:/usr/bin:/usr/local/bin"
+
+
+
+- name:            chown -R ~postgres/src/pgbouncer
+  become_user:     root
+  become:          yes
+  command:         chown -R postgres:postgres  ~postgres/src/pgbouncer
+  environment:  
+      PATH:                    "/bin:/usr/bin:/usr/sbin"
+
+- name:           ./configure pgbouncer
+  shell:         cd {{ HOME }}/postgres/src/pgbouncer && ./configure
+  environment:  
+      PATH:      "{{ HOME }}/postgres/dist-pg/bin:/bin:/usr/bin:/usr/local/bin"
+
+  
+################### Compile timescale ############################
+
+- name:            make install pgbouncer
+  make:            target="install"      chdir="{{ HOME }}/postgres/src/pgbouncer"
+  become_user:     root
+  become:          yes
+  environment:  
+      PATH:                 "{{ HOME }}/postgres/dist-pg/bin:/bin:/usr/bin:/usr/local/bin"
+
+

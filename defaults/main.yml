@@ -4,6 +4,7 @@ install_docs:        False
 compile_postgres:    True
 compile_timescaledb: False
 compile_extensions:  False
+compile_pgbouncer:   False
 
 pgxn_ext:
      - pgtap

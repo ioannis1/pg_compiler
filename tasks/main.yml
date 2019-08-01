@@ -1,6 +1,7 @@
 ################################################# Helper Variables
 - command:      uname -s
-  environment:  PATH="/bin:/usr/bin:/usr/local/bin"
+  environment:  
+      PATH:     "/bin:/usr/bin:/usr/local/bin"
   register:     result
 
 - set_fact:     os_family="{{result.stdout}}"
@@ -15,7 +16,8 @@
   when:         os_family == "FreeBSD"
 
 - command:      whoami
-  environment:  PATH="/bin:/usr/bin:/usr/local/bin"
+  environment:  
+      PATH:     "/bin:/usr/bin:/usr/local/bin"
   register:     WHOAMI
 ################################################################# 
 - name:        fail unless ansible executing as unix user postgres
@@ -35,32 +37,14 @@
   include:     "{{ ansible_os_family }}.yml"
   become_user:  root
   become:       yes
-  when:         false
 
-- include: compile.yml
+- include:      compile_postgres.yml
   become_user:  postgres
   become:       yes
   when:         compile_postgres
 
 
-#################################       verify  link 'dist-pg' is pointing to {{ postgres_checkout }}
 
-- stat:    path="/home/postgres/dist-pg"
-  register: sym
-
-- name:      fail if symlink does not exist
-  when:      (sym.stat.islnk is undefined) or (not  sym.stat.islnk)
-  fail:      msg="symlink ~postgres/dist-pg does not exist"
-
-- shell:     '/bin/ls -l ~postgres/dist-pg'
-  register:  ls
-
-- set_fact:    actual_pgdir="{{ ls.stdout.split('->')[1] }}"
-
-- name:      symlink should point to correct dir
-  fail:      msg="symlink ~postgres/dist-pg  points to \"{{ actual_pgdir }}\" instead of \"{{ postgres_checkout }}\" "
-  when:    
-     -   actual_pgdir !=   " pg-{{  postgres_checkout }}"
 
 # Skip timescaldeb if already installed
 - stat:      path="{{ HOME }}/postgres/dist-pg/share/extension/timescaledb.control"
@@ -73,7 +57,15 @@
   become:       yes
   when:     
      -  compile_timescaledb
-     -  not ts_control.stat.exists
+     -  not    ts_control.stat.exists
+
+
+- include:      pgbouncer.yml
+  become_user:  postgres
+  become:       yes
+  when:         compile_pgbouncer
+
+
   
 - include:      extensions.yml
   become_user:  postgres
