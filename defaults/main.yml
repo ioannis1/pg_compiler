@@ -3,6 +3,7 @@ postgres_checkout:   master
 install_docs:        False
 compile_postgres:    True
 compile_timescaledb: False
+compile_extensions:  False
 
 pgxn_ext:
      - pgtap
