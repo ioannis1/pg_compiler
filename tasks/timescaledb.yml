@@ -1,28 +1,3 @@
-############################## Helper Variables
-- command:      uname -s
-  environment:  PATH="/bin:/usr/bin:/usr/local/bin"
-  register:     result
-
-- set_fact:     os_family="{{result.stdout}}"
-
-- set_fact:     HOME="/home"
-  when:         os_family == "Linux"
-
-- set_fact:     HOME="/Users"
-  when:         os_family == "Darwin"
-
-- set_fact:     HOME="/home"
-  when:         os_family == "FreeBSD"
-
-- command:      whoami
-  environment:  PATH="/bin:/usr/bin:/usr/local/bin"
-  register:     WHOAMI
-############################################################
-- name:        fail unless ansible executing as unix user postgres
-  when:        not (  WHOAMI.stdout  == "postgres")
-  fail:        msg="Detected '{{ WHOAMI.stdout }}', but must run as 'postgres'"
-
-
 ################### git timescaledb ############################
 - name:        git timescaledb
   remote_user: postgres
@@ -34,31 +9,44 @@
 
 ################### Other Repos ############################
 
-- name:         chown -R ~postgres/src/timescaledb
-  become_user:  root
-  become:       yes
-  command:      chown -R postgres:postgres  ~postgres/src/timescaledb
-  environment:  PATH="/bin:/usr/bin:/usr/local/bin"
-
-
 - name:          update github tiscaledb
   ignore_errors: True
-  when:          false
   git:
     repo:       https://github.com/timescale/timescaledb.git
-    dest:       "{{ HOME }}/postgres/src/postgres"
+    dest:       "{{ HOME }}/postgres/src/timescaledb"
     update:     yes
     clone:      no
     force:      yes
 
+
 ################### Configure ############################
 
-- name:        ./configure Debian
-  when:        ansible_os_family == 'Debian'
-  command:     "./bootstrap -DREGRESS_CHECKS=OFF  chdir={{ HOME }}/postgres/src/timescaledb"
+
+- name:           no previous build exits
+  when:           ansible_os_family == 'Debian'
+  file:           dest="/home/postgres/src/timescaledb/build"    state=absent
 
 
-################### Compile postgres ############################
+- name:           ./bootstrap timescaledb
+  shell:          "cd ~postgres/src/timescaledb && ./bootstrap -DREGRESS_CHECKS=OFF "
+  environment:  
+      PATH:                 "/home/postgres/dist-pg/bin:/bin:/usr/bin:/usr/local/bin"
+      BUILD_FORCE_REMOVE:   true
+
+
+- name:            chown -R ~postgres/src/timescaledb
+  become_user:     root
+  become:          yes
+  command:         chown -R postgres:postgres  ~postgres/src/timescaledb
+  environment:  
+      PATH:                    "/bin:/usr/bin:/usr/sbin"
+  
+################### Compile timescale ############################
+
 - name:      make
-  make:      target="install"      chdir="{{ HOME }}/postgres/src/timescaledb/build" 
+  make:      target="install"      chdir="/home/postgres/src/timescaledb/build"
+  environment:  
+      PATH:                 "/home/postgres/dist-pg/bin:/bin:/usr/bin:/usr/local/bin"
+
+
 

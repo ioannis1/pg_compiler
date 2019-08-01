@@ -1,35 +1,3 @@
-############################## Helper Variables
-- command:      uname -s
-  environment:  PATH="/bin:/usr/bin:/usr/local/bin"
-  register:     result
-
-- set_fact:     os_family="{{result.stdout}}"
-
-- set_fact:     HOME="/home"
-  when:         os_family == "Linux"
-
-- set_fact:     HOME="/Users"
-  when:         os_family == "Darwin"
-
-- set_fact:     HOME="/home"
-  when:         os_family == "FreeBSD"
-
-- command:      whoami
-  environment:  PATH="/bin:/usr/bin:/usr/local/bin"
-  register:     WHOAMI
-############################################################
-- name:        fail unless ansible executing as unix user postgres
-  when:        not (  WHOAMI.stdout  == "postgres")
-  fail:        msg="Detected '{{ WHOAMI.stdout }}', but must run as 'postgres'"
-
-- name:        /var/log/postgres
-  become_user: root
-  become:      yes
-  file:        path=/var/log/postgresql   state=directory   owner=postgres   group=postgres   mode=0750 
-
-- name:       ~postgres/src
-  file:       path="{{ HOME }}/postgres/src"   owner=postgres  group=postgres  group=postgres  state=directory
-
 - name:        ioannis.mk
   remote_user: postgres
   become:      yes
@@ -94,10 +62,3 @@
 - name:      "ln -sf ~/pg-{{ postgres_checkout }}  ~/dist-pg"
   file:      src="{{ HOME}}/postgres/pg-{{ postgres_checkout  }}"  dest="{{ HOME}}/postgres/dist-pg"  owner=postgres   state=link    
 
-################### Compile extensions ############################
-- name:            pgxn extenions
-  command:         "pgxnclient install {{ item }}"
-  environment:  
-     PATH:         "{{ HOME }}/postgres/pg-{{ postgres_checkout }}/bin:/bin:/usr/bin:/usr/local/bin:{{ansible_env.PATH}}"
-  with_items:      "{{ pgxn_ext }}"
-          

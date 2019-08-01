@@ -1,0 +1,7 @@
+################### Compile extensions ############################
+- name:            pgxn extenions
+  command:         "pgxnclient install {{ item }}"
+  environment:  
+     PATH:         "{{ HOME }}/postgres/pg-{{ postgres_checkout }}/bin:/bin:/usr/bin:/usr/local/bin:{{ansible_env.PATH}}"
+  with_items:      "{{ pgxn_ext }}"
+          

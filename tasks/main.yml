@@ -1,22 +1,58 @@
-    
-- name:       extra packages
-  include:    "{{ ansible_os_family }}.yml"
+################################################# Helper Variables
+- command:      uname -s
+  environment:  PATH="/bin:/usr/bin:/usr/local/bin"
+  register:     result
+
+- set_fact:     os_family="{{result.stdout}}"
+
+- set_fact:     HOME="/home"
+  when:         os_family == "Linux"
+
+- set_fact:     HOME="/Users"
+  when:         os_family == "Darwin"
+
+- set_fact:     HOME="/home"
+  when:         os_family == "FreeBSD"
+
+- command:      whoami
+  environment:  PATH="/bin:/usr/bin:/usr/local/bin"
+  register:     WHOAMI
+################################################################# 
+- name:        fail unless ansible executing as unix user postgres
+  when:        not (  WHOAMI.stdout  == "postgres")
+  fail:        msg="Detected '{{ WHOAMI.stdout }}', but must run as 'postgres'"
+
+- name:        /var/log/postgres
   become_user: root
   become:      yes
-  when:        false
+  file:        path=/var/log/postgresql   state=directory   owner=postgres   group=postgres   mode=0750 
 
+- name:       ~postgres/src
+  file:       path="{{ HOME }}/postgres/src"   owner=postgres  group=postgres  group=postgres  state=directory
+
+  ##################################################################
+- name:         packages
+  include:     "{{ ansible_os_family }}.yml"
+  become_user:  root
+  become:       yes
+  when:         false
 
 - include: compile.yml
-  become_user: postgres
-  become:      yes
+  become_user:  postgres
+  become:       yes
+  when:         compile_postgres
 
-- include:     timescaledb.yml
-  become_user: postgres
-  become:      yes
-  when:        compile_timescaledb
+- include:      timescaledb.yml
+  become_user:  postgres
+  become:       yes
+  when:         compile_timescaledb
   
-  ########################################### Post Install
-- include:   "{{ item }}"
+- include:      extensions.yml
+  become_user:  postgres
+  become:       yes
+
+##################################################### Post Install
+- include:     "{{ item }}"
   with_first_found:
     - files:
         - "{{ ansible_hostname }}.yml"

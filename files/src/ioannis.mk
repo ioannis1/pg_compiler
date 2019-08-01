@@ -22,7 +22,7 @@ clean:
 config: 
 	./configure \
 	--with-includes=/opt/local/include \
-	--prefix=/$(if $(ostype)=Linux,home,Users)/postgres/pg-9.10 \
+	--prefix=/$(if $(ostype)=Linux,home,Users)/postgres/pg-REL_11_4 \
 	--with-libxml   \
 	--with-libxslt  \
 	--with-pam      \

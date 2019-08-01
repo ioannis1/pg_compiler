@@ -1,6 +1,7 @@
 github_repos:        False
 postgres_checkout:   master
 install_docs:        False
+compile_postgres:    True
 compile_timescaledb: False
 
 pgxn_ext:
