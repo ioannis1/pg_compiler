@@ -62,7 +62,7 @@
   when:    
      -   actual_pgdir !=   " pg-{{  postgres_checkout }}"
 
-# Do noting if timescaldeb is already installed
+# Skip timescaldeb if already installed
 - stat:      path="{{ HOME }}/postgres/dist-pg/share/extension/timescaledb.control"
   register:  ts_control
  #############################################################
