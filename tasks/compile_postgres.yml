@@ -5,7 +5,7 @@
 
     
 ################### git postgresql ############################
-- name:        git postgres
+- name:        git postgres  {{ postgres_checkout }}
   remote_user: postgres
   become:      yes
   register:    github_postgres_success
@@ -24,7 +24,8 @@
   become_user:  root
   become:       yes
   command:      chown -R postgres:postgres  ~postgres/src/postgres
-  environment:  PATH="/bin:/usr/bin:/usr/local/bin"
+  environment:  
+      PATH:     /bin:/usr/bin:/usr/local/bin
 
 
 - name:          update github postgres
@@ -52,7 +53,7 @@
   command:   "./configure   --with-includes=/opt/local/include   --with-libs=/opt/local/lib  --prefix={{ HOME }}/postgres/pg-{{ postgres_checkout }}   --with-openssl   --with-pam --with-ldap  chdir={{ HOME }}/postgres/src/postgres"
 
 ################### Compile postgres ############################
-- name:      make    postgres
+- name:      make    postgres  {{ postgres_checkout }}
   make:      target="install"      chdir="{{ HOME }}/postgres/src/postgres" 
 
 - name:      make install-docs

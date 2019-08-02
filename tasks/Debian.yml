@@ -22,4 +22,5 @@
                   - libevent-dev
                   - pandoc
                   - libtool
+                  - opensp
 
