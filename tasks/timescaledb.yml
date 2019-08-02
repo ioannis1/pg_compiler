@@ -64,7 +64,7 @@
   
 ################### Compile timescale ############################
 
-- name:      make
+- name:      make   timescaledb
   make:      target="install"      chdir="{{ HOME }}/postgres/src/timescaledb/build"
   environment:  
       PATH:                 "{{ HOME }}/postgres/dist-pg/bin:/bin:/usr/bin:/usr/local/bin"
