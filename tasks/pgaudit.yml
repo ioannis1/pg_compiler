@@ -19,7 +19,12 @@
      -   false
 
 
-################### git timescaledb ############################
+################### git pgaudit ############################
+
+- name:           rm ~/src/pgaudit
+  file:           dest="{{ HOME }}/postgres/src/pgaudit"    state=absent
+
+
 - name:        git pgaudit
   remote_user: postgres
   become:      yes
@@ -47,7 +52,7 @@
       PATH:                    "/bin:/usr/bin:/usr/sbin"
   
 
-################### Compile timescale ############################
+################### Compile pgaudit ############################
 
 - name:           make
   make:           target="install"      chdir="{{ HOME }}/postgres/src/pgaudit"
