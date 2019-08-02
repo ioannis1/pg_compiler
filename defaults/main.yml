@@ -5,6 +5,8 @@ compile_postgres:    True
 compile_timescaledb: False
 compile_extensions:  False
 compile_pgbouncer:   False
+compile_pgaudit:     False
+
 
 pgxn_ext:
      - pgtap

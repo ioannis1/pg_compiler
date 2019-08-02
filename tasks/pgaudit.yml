@@ -15,59 +15,46 @@
   fail:      msg="symlink ~postgres/dist-pg  points to \"{{ actual_pgdir }}\" instead of \"{{ postgres_checkout }}\" "
   when:    
      -   actual_pgdir !=   " pg-{{  postgres_checkout }}"
-     -   compile_timescaledb
+     -   compile_pgaudit
+     -   false
 
 
 ################### git timescaledb ############################
-- name:        git timescaledb
+- name:        git pgaudit
   remote_user: postgres
   become:      yes
   git:  
-     repo:       https://github.com/timescale/timescaledb.git
-     dest:      "{{ HOME }}/postgres/src/timescaledb"
-     #version:   'master'
+     repo:       https://github.com/2ndQuadrant/pgaudit.git
+     dest:      "{{ HOME }}/postgres/src/pgaudit"
 
-################### Other Repos ############################
 
-- name:          update github tiscaledb
+- name:          update github pgaudit
   ignore_errors: True
   git:
-    repo:       https://github.com/timescale/timescaledb.git
-    dest:       "{{ HOME }}/postgres/src/timescaledb"
-    update:     yes
-    clone:      no
-    force:      yes
+     repo:       https://github.com/2ndQuadrant/pgaudit.git
+     dest:       "{{ HOME }}/postgres/src/pgaudit"
+     update:     yes
+     clone:      no
+     force:      yes
 
 
-################### Configure ############################
 
-
-- name:           no previous build exits
-  file:           dest="{{ HOME }}/postgres/src/timescaledb/build"    state=absent
-
-
-- name:           ./bootstrap timescaledb
-  shell:          "cd ~postgres/src/timescaledb && ./bootstrap -DREGRESS_CHECKS=OFF "
-  #when:           ansible_os_family == 'Debian'
-  environment:  
-      PATH:                 "{{ HOME }}/postgres/dist-pg/bin:/bin:/usr/bin:/usr/local/bin"
-      PG_PATH:              "{{ HOME }}/postgres/dist-pg/bin"
-      BUILD_FORCE_REMOVE:   true
-
-
-- name:            chown -R ~postgres/src/timescaledb
+- name:            chown -R ~postgres/src/pgaudit
   become_user:     root
   become:          yes
   command:         chown -R postgres:postgres  ~postgres/src/timescaledb
   environment:  
       PATH:                    "/bin:/usr/bin:/usr/sbin"
   
+
 ################### Compile timescale ############################
 
-- name:      make
-  make:      target="install"      chdir="{{ HOME }}/postgres/src/timescaledb/build"
+- name:           make
+  make:           target="install"      chdir="{{ HOME }}/postgres/src/pgaudit"
   environment:  
       PATH:                 "{{ HOME }}/postgres/dist-pg/bin:/bin:/usr/bin:/usr/local/bin"
+      PG_PATH:              "{{ HOME }}/postgres/dist-pg/bin"
+      USE_PGXS:              1
 
 
 

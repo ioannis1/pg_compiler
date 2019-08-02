@@ -65,6 +65,10 @@
   become:       yes
   when:         compile_pgbouncer
 
+- include:      pgaudit.yml
+  become_user:  postgres
+  become:       yes
+  when:         compile_pgaudit
 
   
 - include:      extensions.yml
