@@ -60,10 +60,12 @@
      -  not    ts_control.stat.exists
 
 
-- include:      pgbouncer.yml
+- include:      compile_pgbouncer.yml
   become_user:  postgres
   become:       yes
-  when:         compile_pgbouncer
+  when:         
+      -  compile_pgbouncer
+      -  "{{ os_family }}" != 'Linux'
 
 - include:      pgaudit.yml
   become_user:  postgres
