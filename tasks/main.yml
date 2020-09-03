@@ -32,6 +32,7 @@
 - name:       ~postgres/src
   file:       path="{{ HOME }}/postgres/src"   owner=postgres  group=postgres  group=postgres  state=directory
 
+
   ##################################################################
 - name:         packages
   include:     "{{ ansible_os_family }}.yml"
@@ -43,14 +44,13 @@
   become:       yes
   when:         compile_postgres
 
-
-
+ #############################################################  Assert dist-pg link
+- include:     dist-pg.yml 
+ #############################################################
 
 # Skip timescaldeb if already installed
 - stat:      path="{{ HOME }}/postgres/dist-pg/share/extension/timescaledb.control"
   register:  ts_control
- #############################################################
-
 
 - include:      timescaledb.yml
   become_user:  postgres
@@ -58,14 +58,19 @@
   when:     
      -  compile_timescaledb
      -  not    ts_control.stat.exists
+ #############################################################
 
+- include:      pg_prometheus.yml
+  become_user:  postgres
+  become:       yes
+  when:         compile_prometheus
 
 - include:      compile_pgbouncer.yml
   become_user:  postgres
   become:       yes
   when:         
       -  compile_pgbouncer
-      -  "{{ os_family }}" != 'Linux'
+      -   os_family != 'Linux'
 
 - include:      pgaudit.yml
   become_user:  postgres

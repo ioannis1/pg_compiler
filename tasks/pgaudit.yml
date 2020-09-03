@@ -1,23 +1,3 @@
-#################################       verify  link 'dist-pg' is pointing to {{ postgres_checkout }}
-- stat:    path="{{ HOME }}/postgres/dist-pg"
-  register: sym
-
-- name:      fail if symlink does not exist
-  when:      (sym.stat.islnk is undefined) or (not  sym.stat.islnk)
-  fail:      msg="symlink ~postgres/dist-pg does not exist"
-
-- shell:     '/bin/ls -l ~postgres/dist-pg'
-  register:  ls
-
-- set_fact:    actual_pgdir="{{ ls.stdout.split('->')[1] }}"
-
-- name:      symlink should point to correct dir
-  fail:      msg="symlink ~postgres/dist-pg  points to \"{{ actual_pgdir }}\" instead of \"{{ postgres_checkout }}\" "
-  when:    
-     -   actual_pgdir !=   " pg-{{  postgres_checkout }}"
-     -   compile_pgaudit
-     -   false
-
 
 ################### git pgaudit ############################
 

@@ -28,4 +28,4 @@
   become_user:    root
   become:         yes
   apt:            pkg="pgbouncer"
-  when:           need_pgbouncer
+  when:           compile_pgbouncer

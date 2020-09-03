@@ -1,0 +1,39 @@
+
+################### git prometheus ############################
+- name:        git pg_prometheus     # not working
+  when:       false
+  remote_user: postgres
+  become:      yes
+  git:  
+     repo:      https://github.com/timescale/pg_prometheus.git
+     dest:      "{{ HOME }}/postgres/src/prometheus"
+     #dest:      "/home/postgres/src/prometheus"
+     update:     yes
+     clone:      no
+     force:      yes
+     #version:   'master'
+     #
+
+- name:        git pg_prometheus
+  remote_user: postgres
+  become:      yes
+  command:     git clone https://github.com/timescale/pg_prometheus.git
+  args:
+      chdir:    "{{ HOME }}/postgres/src/"
+      creates:  "{{ HOME }}/postgres/src/pg_prometheus"
+
+################### Compile pg_prometheus  ############################
+
+- name:    clean 
+  shell:   make clean install
+  args:
+     chdir:       "{{ HOME }}/postgres/src/pg_prometheus"
+  environment:  
+      PATH:      "{{ HOME }}/postgres/dist-pg/bin:/bin:/usr/bin:/usr/local/bin"
+
+
+      #- name:            chown -R ~postgres/src/timescaledb
+      #command:         chown -R postgres:postgres  ~postgres/src/timescaledb
+      #environment:  
+      #PATH:                    "/bin:/usr/bin:/usr/sbin"
+  
