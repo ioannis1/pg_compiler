@@ -5,6 +5,8 @@
   apt:
      pkg:
                   - cmake
+                  - clang-tidy
+                  - clang-format
 
 #
 ################### git timescaledb ############################
@@ -19,7 +21,7 @@
 ################### Other Repos ############################
 
 - name:          update github tiscaledb
-  ignore_errors: True
+  ignore_errors: true
   git:
     repo:       https://github.com/timescale/timescaledb.git
     dest:       "{{ HOME }}/postgres/src/timescaledb"
@@ -35,8 +37,11 @@
   file:           dest="{{ HOME }}/postgres/src/timescaledb/build"    state=absent
 
 
-- name:           ./bootstrap timescaledb
-  shell:          "cd ~postgres/src/timescaledb && ./bootstrap -DREGRESS_CHECKS=OFF "
+- name:           ./bootstrap timescaledb 
+  shell:          ./bootstrap -DREGRESS_CHECKS=OFF -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+  args:
+    chdir:         "{{ HOME }}/postgres/src/timescaledb"
+
   #when:           ansible_os_family == 'Debian'
   environment:  
       PATH:                 "{{ HOME }}/postgres/dist-pg/bin:/bin:/usr/bin:/usr/local/bin"
@@ -57,6 +62,5 @@
   make:      target="install"      chdir="{{ HOME }}/postgres/src/timescaledb/build"
   environment:  
       PATH:                 "{{ HOME }}/postgres/dist-pg/bin:/bin:/usr/bin:/usr/local/bin"
-
 
 

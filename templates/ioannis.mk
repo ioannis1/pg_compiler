@@ -19,10 +19,13 @@ install:
 clean:
 	make distclean
 
+RELEASE = {{ postgres_checkout | default('REL_12_4')}}
+
+
 config: 
 	./configure \
 	--with-includes=/opt/local/include \
-	--prefix=/$(if $(ostype)=Linux,home,Users)/postgres/pg-REL_11_4 \
+	--prefix=/$(if $(ostype)=Linux,home,Users)/postgres/pg-$(RELEASE)  \
 	--with-libxml   \
 	--with-libxslt  \
 	--with-pam      \
@@ -33,6 +36,9 @@ config:
 #--with-gssapi  
 
 	#--with-system-tzdata=/usr/share/zoneinfo 
+
+ls:
+	ls   /$(if $(ostype)=Linux,home,Users)/postgres/pg-$(RELEASE)/share/extension
 
 
 #--with-ossp-uuid   \

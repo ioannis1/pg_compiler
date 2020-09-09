@@ -1,7 +1,7 @@
 - name:        ioannis.mk
   remote_user: postgres
   become:      yes
-  copy:        src=src/ioannis.mk  dest="{{ HOME }}/postgres/src"
+  template:    src=ioannis.mk  dest="{{ HOME }}/postgres/src"
 
     
 ################### git postgresql ############################
@@ -54,7 +54,7 @@
 
 ################### Compile postgres ############################
 - name:      make    postgres  {{ postgres_checkout }}
-  make:      target="install"      chdir="{{ HOME }}/postgres/src/postgres" 
+  make:      target="install-world"      chdir="{{ HOME }}/postgres/src/postgres" 
 
 - name:      make install-docs
   make:      target="install-docs"      chdir="{{ HOME }}/postgres/src/postgres" 
