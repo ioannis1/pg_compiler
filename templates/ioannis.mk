@@ -40,6 +40,8 @@ config:
 ls:
 	ls   /$(if $(ostype)=Linux,home,Users)/postgres/pg-$(RELEASE)/share/extension
 
+ver:
+	@./src/bin/pg_config/pg_config  --version
 
 #--with-ossp-uuid   \
 #--bindir=/usr/local/pgsql/bin   \
