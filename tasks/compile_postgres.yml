@@ -42,7 +42,7 @@
 
 - name:        ./configure postgres (Debian)
   when:        ansible_os_family == 'Debian'
-  command:     "./configure   --with-includes=/opt/local/include  --with-libs=/opt/local/lib --prefix={{ HOME }}/postgres/pg-{{ postgres_checkout }}   --with-openssl   --with-systemd --with-ldap  chdir={{ HOME }}/postgres/src/postgres"
+  command:     "./configure   --with-includes=/opt/local/include  --with-libs=/opt/local/lib --prefix={{ HOME }}/postgres/pg-{{ postgres_checkout }}   --with-openssl   --with-systemd --with-icu --with-ldap  chdir={{ HOME }}/postgres/src/postgres"
 
 - name:      ./configure postgres (FreeBSD)
   when:      os_family == 'FreeBSD'

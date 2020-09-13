@@ -29,6 +29,8 @@ config:
 	--with-libxml   \
 	--with-libxslt  \
 	--with-pam      \
+	--with-systemd      \
+	--with-icu      \
 	--with-openssl  \
 	--with-ldap    
 
