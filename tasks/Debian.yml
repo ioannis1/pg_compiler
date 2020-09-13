@@ -23,6 +23,7 @@
                   - pandoc
                   - libtool
                   - opensp
+                  - libsystemd-dev
 
 - name:           packages to compile postgres sources
   become_user:    root
