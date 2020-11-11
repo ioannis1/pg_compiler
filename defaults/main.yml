@@ -8,6 +8,7 @@ compile_extensions:  False
 compile_pgbouncer:   False
 compile_pgaudit:     False
 postgres_checkout:   REL_12_4
+need_pgbouncer_fwd:  false
 
 
 

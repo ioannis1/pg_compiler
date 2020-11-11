@@ -1,0 +1,45 @@
+
+################### git pgaudit ############################
+
+- name:           rm ~/src/pgbouncer_fdw
+  file:           dest="{{ HOME }}/postgres/src/pgbouncer_fdw"    state=absent
+
+
+- name:        git pgbouncer_fdw
+  remote_user: postgres
+  become:      yes
+  git:  
+     repo:      https://github.com/CrunchyData/pgbouncer_fdw.git
+     dest:      "{{ HOME }}/postgres/src/pgbouncer_fdw"
+
+
+- name:          update github pgbouncer
+  ignore_errors: True
+  git:
+     repo:       https://github.com/CrunchyData/pgbouncer_fdw.git
+     dest:       "{{ HOME }}/postgres/src/pgbouncer_fdw"
+     update:     yes
+     clone:      no
+     force:      yes
+
+
+
+- name:            chown -R ~postgres/src/pgbouncer_fdw
+  become_user:     root
+  become:          yes
+  command:         chown -R postgres:postgres  ~postgres/src/pgbouncer_fdw
+  environment:  
+      PATH:                    "/bin:/usr/bin:/usr/sbin"
+  
+
+################### Compile pgaudit ############################
+
+- name:           make
+  make:           target="install"      chdir="{{ HOME }}/postgres/src/pgbouncer_fdw"
+  environment:  
+      PATH:                 "{{ HOME }}/postgres/dist-pg/bin:/bin:/usr/bin:/usr/local/bin"
+      PG_PATH:              "{{ HOME }}/postgres/dist-pg/bin"
+      USE_PGXS:              1
+
+
+
