@@ -77,6 +77,10 @@
   become:       yes
   when:         compile_pgaudit
 
+- include:      pgbouncer_fdw.yml
+  become_user:  postgres
+  become:       yes
+  when:         need_pgbouncer_fdw
   
 - include:      extensions.yml
   become_user:  postgres
